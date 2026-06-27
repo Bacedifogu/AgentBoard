@@ -1,0 +1,37 @@
+name: AI Planner
+
+on:
+  issues:
+    types:
+      - labeled
+
+jobs:
+  planner:
+    if: github.event.label.name == 'ai-task'
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: read
+      id-token: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Generate implementation plan
+        uses: anomalyco/opencode/github@latest
+        env:
+          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+        with:
+          model: opencode-go/minimax-m2.7
+          agent: planner
+          prompt: |
+            Plan the GitHub Issue that triggered this workflow.
+
+            When finished:
+            - Publish the plan as a comment.
+            - Remove the ai-task label.
+            - Add the ai-planned label.
