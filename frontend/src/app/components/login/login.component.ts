@@ -4,47 +4,36 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services';
 
 @Component({
-  selector: 'app-register',
+  selector: 'app-login',
   standalone: true,
   imports: [FormsModule, RouterLink],
-  templateUrl: './register.html',
-  styleUrl: './register.scss',
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.scss',
 })
-export class Register {
+export class LoginComponent {
   username = '';
-  email = '';
   password = '';
-  confirmPassword = '';
   error = signal('');
   loading = signal(false);
 
   constructor(private authService: AuthService, private router: Router) {}
 
   onSubmit() {
-    if (!this.username || !this.email || !this.password) {
+    if (!this.username || !this.password) {
       this.error.set('Please fill in all fields');
-      return;
-    }
-
-    if (this.password !== this.confirmPassword) {
-      this.error.set('Passwords do not match');
       return;
     }
 
     this.loading.set(true);
     this.error.set('');
 
-    this.authService.register({
-      username: this.username,
-      email: this.email,
-      password: this.password
-    }).subscribe({
+    this.authService.login({ username: this.username, password: this.password }).subscribe({
       next: (response) => {
         this.authService.setSession(response);
         this.router.navigate(['/board']);
       },
       error: (err) => {
-        this.error.set(err.error?.message || 'Registration failed');
+        this.error.set(err.error?.message || 'Login failed');
         this.loading.set(false);
       }
     });

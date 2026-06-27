@@ -7,10 +7,10 @@ import { Note, NoteStatus } from '../../models';
   selector: 'app-board',
   standalone: true,
   imports: [FormsModule],
-  templateUrl: './board.html',
-  styleUrl: './board.scss',
+  templateUrl: './board.component.html',
+  styleUrl: './board.component.scss',
 })
-export class Board implements OnInit {
+export class BoardComponent implements OnInit {
   notes = signal<Note[]>([]);
   loading = signal(false);
   showCreateForm = signal(false);
