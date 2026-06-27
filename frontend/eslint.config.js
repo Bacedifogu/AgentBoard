@@ -2,7 +2,6 @@ import eslint from '@eslint/js';
 import tseslintPlugin from '@typescript-eslint/eslint-plugin';
 import tseslintParser from '@typescript-eslint/parser';
 import angularPlugin from '@angular-eslint/eslint-plugin';
-import angularTemplatePlugin from '@angular-eslint/eslint-plugin-template';
 
 export default [
   {
