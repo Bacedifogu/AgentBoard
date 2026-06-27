@@ -1,0 +1,120 @@
+<div class="board-container">
+  <header class="board-header">
+    <h1>AgentBoard</h1>
+    <div class="user-info">
+      <span>Welcome, {{ authService.user()?.username }}</span>
+      <button (click)="logout()" class="btn-logout">Logout</button>
+    </div>
+  </header>
+
+  <div class="board-actions">
+    <button (click)="showCreateForm.set(true)" class="btn-primary">
+      + New Note
+    </button>
+  </div>
+
+  @if (showCreateForm()) {
+    <div class="create-form">
+      <h3>Create New Note</h3>
+      <div class="form-group">
+        <input
+          type="text"
+          [(ngModel)]="newNoteTitle"
+          placeholder="Note title"
+          class="form-input"
+        />
+      </div>
+      <div class="form-group">
+        <textarea
+          [(ngModel)]="newNoteContent"
+          placeholder="Note content"
+          class="form-input"
+          rows="3"
+        ></textarea>
+      </div>
+      <div class="form-group">
+        <select [(ngModel)]="newNoteStatus" class="form-input">
+          @for (status of statuses; track status) {
+            <option [value]="status">{{ status }}</option>
+          }
+        </select>
+      </div>
+      <div class="form-actions">
+        <button (click)="createNote()" class="btn-primary">Create</button>
+        <button (click)="cancelCreate()" class="btn-secondary">Cancel</button>
+      </div>
+    </div>
+  }
+
+  @if (loading()) {
+    <div class="loading">Loading notes...</div>
+  }
+
+  <div class="kanban-board">
+    <div class="kanban-column">
+      <h2 class="column-title todo">TODO</h2>
+      <div class="column-notes">
+        @for (note of todoNotes(); track note.id) {
+          <div class="note-card">
+            <div class="note-header">
+              <span class="note-author">{{ note.authorUsername }}</span>
+              <button (click)="deleteNote(note)" class="btn-delete">×</button>
+            </div>
+            <h3 class="note-title">{{ note.title }}</h3>
+            <p class="note-content">{{ note.content }}</p>
+            <div class="note-actions">
+              <button (click)="updateNoteStatus(note, noteStatuses.IN_PROGRESS)" class="btn-move">
+                → In Progress
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="kanban-column">
+      <h2 class="column-title in-progress">IN PROGRESS</h2>
+      <div class="column-notes">
+        @for (note of inProgressNotes(); track note.id) {
+          <div class="note-card">
+            <div class="note-header">
+              <span class="note-author">{{ note.authorUsername }}</span>
+              <button (click)="deleteNote(note)" class="btn-delete">×</button>
+            </div>
+            <h3 class="note-title">{{ note.title }}</h3>
+            <p class="note-content">{{ note.content }}</p>
+            <div class="note-actions">
+              <button (click)="updateNoteStatus(note, noteStatuses.TODO)" class="btn-move">
+                ← TODO
+              </button>
+              <button (click)="updateNoteStatus(note, noteStatuses.DONE)" class="btn-move">
+                Done →
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="kanban-column">
+      <h2 class="column-title done">DONE</h2>
+      <div class="column-notes">
+        @for (note of doneNotes(); track note.id) {
+          <div class="note-card">
+            <div class="note-header">
+              <span class="note-author">{{ note.authorUsername }}</span>
+              <button (click)="deleteNote(note)" class="btn-delete">×</button>
+            </div>
+            <h3 class="note-title">{{ note.title }}</h3>
+            <p class="note-content">{{ note.content }}</p>
+            <div class="note-actions">
+              <button (click)="updateNoteStatus(note, noteStatuses.IN_PROGRESS)" class="btn-move">
+                ← In Progress
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>
