@@ -1,0 +1,41 @@
+name: AI Implementer
+
+on:
+  issues:
+    types:
+      - labeled
+
+jobs:
+  implement:
+    if: github.event.label.name == 'ai-approved'
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: true
+          fetch-depth: 0
+
+      - name: Implement issue
+        uses: anomalyco/opencode/github@latest
+        env:
+          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+        with:
+          model: opencode-go/minimax-m2.7
+          agent: implementer
+          prompt: |
+            Implement the approved GitHub Issue.
+
+            When finished:
+            - Create a branch.
+            - Open a Pull Request.
+            - Remove ai-approved.
+            - Add ai-done.
